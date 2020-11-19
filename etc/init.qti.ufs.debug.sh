@@ -29,8 +29,10 @@
 
 # Enable various ufs ftrace debugging events
 tracefs=/sys/kernel/tracing
+ufs_node=$(ls /sys/bus/platform/devices/ | grep ufshc)
+dbg=`cat /sys/bus/platform/devices/$ufs_node/qcom/dbg_state`
 
-if [ -d $tracefs ]; then
+if [ -d $tracefs -a "$dbg" = 1 ]; then
     mkdir $tracefs/instances/ufs
     ufsevent=$tracefs/instances/ufs/set_event
 
