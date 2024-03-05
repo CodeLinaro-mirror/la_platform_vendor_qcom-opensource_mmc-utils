@@ -52,3 +52,18 @@ if [ -d $tracefs -a "$dbg" = 1 ]; then
     echo scsi_dispatch_cmd_timeout >> $ufsevent
 fi
 
+#read ufs mcq node.
+value=$(cat /sys/module/ufshcd_core/parameters/use_mcq_mode)
+
+#set the io-scheduler to bfq and slice idle to 0 for all non-mcq support devices.
+if [ "$value" != "Y" ]; then
+	for sd_device in /sys/block/sd*/queue/scheduler;
+	do
+		echo bfq > $sd_device
+	done
+	#set the slice_idle to 0 for UFS SSD's.
+	for slice_idle in /sys/block/sd*/queue/iosched/slice_idle;
+	do
+		echo 0 > $slice_idle
+	done
+fi
