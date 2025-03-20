@@ -28,3 +28,7 @@
 
 on init
     exec u:r:vendor-qti-testscripts:s0 -- /vendor/bin/sh /vendor/bin/init.qti.ufs.debug.sh
+
+on property:sys.boot_completed=1
+    #Disable upstream UFS PM QoS
+    write /sys/bus/platform/devices/1d84000.ufshc/pm_qos_enable 0
